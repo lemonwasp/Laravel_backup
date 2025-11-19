@@ -36,6 +36,16 @@ class AuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
+        // GitHub 정보 완전 제거
+        $user = Auth::user();
+        if ($user) {
+            $user->update([
+                'github_id' => null,
+                'github_token' => null,
+                'github_refresh_token' => null,
+            ]);
+        }
+
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();

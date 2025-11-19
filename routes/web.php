@@ -21,6 +21,16 @@ Route::middleware('auth')->group(function () {
     
     // GET 방식 로그아웃 (편의를 위해 추가, POST 방식도 사용 가능)
     Route::get('/logout', function (Request $request) {
+        // GitHub 정보 완전 제거
+        $user = Auth::user();
+        if ($user) {
+            $user->update([
+                'github_id' => null,
+                'github_token' => null,
+                'github_refresh_token' => null,
+            ]);
+        }
+
         Auth::guard('web')->logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
